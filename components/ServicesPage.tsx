@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
-import { GoogleGenAI } from "@google/genai";
 import Reveal from './Reveal';
 import Button from './Button';
 
@@ -8,7 +7,7 @@ interface ServiceDetail {
   id: string;
   title: string;
   desc: string;
-  prompt: string;
+  image: string;
   points: string[];
 }
 
@@ -17,59 +16,33 @@ const services: ServiceDetail[] = [
     id: "brick",
     title: "Heritage Brick Masonry",
     desc: "Knoxville's most reliable brickwork. We handle new builds, historical repairs, and intricate custom patterns.",
-    prompt: "A beautiful, detailed close-up of a new red brick wall being built with professional mortar joints, artisanal masonry craftsmanship, sharp detail, 8k.",
+    image: "https://images.unsplash.com/photo-1590059393043-4e365e777651?w=1200&h=750&fit=crop",
     points: ["Historical color matching", "Tuckpointing & repair", "Custom entryways", "Structural brickwork"]
   },
   {
     id: "stone",
     title: "Tennessee Fieldstone",
     desc: "Custom stone solutions using local Tennessee fieldstone and flagstone for an authentic regional look.",
-    prompt: "Stunning outdoor stone patio made from natural Tennessee flagstone, multi-colored stone textures, professional landscaping, Knoxville aesthetic, 8k.",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=750&fit=crop",
     points: ["Natural stone patios", "Stacked stone walls", "Flagstone walkways", "Stone veneer siding"]
-  },
+    },
   {
     id: "structural",
     title: "Structural Masonry",
     desc: "Foundation-grade blockwork and retaining walls engineered for Knoxville's rolling terrain and clay soils.",
-    prompt: "Large precision retaining wall made of heavy structural stone blocks, engineered for steep terrain, professional construction, commercial grade masonry.",
+    image: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=750&fit=crop",
     points: ["Engineered retaining walls", "CMU block foundations", "Basement waterproof masonry", "Site preparation"]
   },
   {
     id: "fire",
     title: "Fireplaces & Chimneys",
     desc: "Professional chimney restoration and custom outdoor fire feature design for East Tennessee homes.",
-    prompt: "Luxury outdoor stone fireplace with a glowing fire inside, cozy backyard setting, premium stonework, night time, atmospheric lighting.",
+    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=750&fit=crop",
     points: ["Chimney rebuilds", "Outdoor fire pits", "Indoor stone hearths", "Flue & liner repairs"]
   }
 ];
 
-// Memory-based cache to avoid Storage Quota errors
-const serviceImageCache: Record<string, string> = {};
-
 const ServicesPage: React.FC<{ onQuoteClick: () => void }> = ({ onQuoteClick }) => {
-  const [images, setImages] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    services.forEach(async (s) => {
-      if (serviceImageCache[s.id]) {
-        setImages(prev => ({ ...prev, [s.id]: serviceImageCache[s.id] }));
-      } else {
-        try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: { parts: [{ text: s.prompt }] }
-          });
-          const part = response.candidates[0].content.parts.find(p => p.inlineData);
-          if (part?.inlineData) {
-            const data = `data:image/png;base64,${part.inlineData.data}`;
-            setImages(prev => ({ ...prev, [s.id]: data }));
-            serviceImageCache[s.id] = data;
-          }
-        } catch (e) { console.error(e); }
-      }
-    });
-  }, []);
 
   return (
     <div className="bg-brand-navy pt-24 min-h-screen">
@@ -91,11 +64,7 @@ const ServicesPage: React.FC<{ onQuoteClick: () => void }> = ({ onQuoteClick }) 
               <Reveal key={s.id} direction={idx % 2 === 0 ? 'left' : 'right'}>
                 <div className={`flex flex-col lg:flex-row items-center gap-12 ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
                   <div className="lg:w-1/2 w-full aspect-[16/10] bg-white/5 rounded-xl overflow-hidden border border-white/10 relative shadow-2xl">
-                    {images[s.id] ? (
-                      <img src={images[s.id]} alt={s.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full animate-pulse bg-white/5"></div>
-                    )}
+                    <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="lg:w-1/2">
                     <h2 className="text-4xl font-display font-bold text-brand-cream mb-6 uppercase">{s.title}</h2>

@@ -1,37 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
-import { GoogleGenAI } from "@google/genai";
 import Reveal from './Reveal';
 import Button from './Button';
 
-// Memory-based cache to avoid Storage Quota errors
-let ownerImageCache = '';
+const ownerImg = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&h=1000&fit=crop';
 
 const AboutPage: React.FC<{ onQuoteClick: () => void }> = ({ onQuoteClick }) => {
-  const [ownerImg, setOwnerImg] = useState('');
-
-  useEffect(() => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    const fetchImg = async () => {
-      if (ownerImageCache) {
-        setOwnerImg(ownerImageCache);
-      } else {
-        try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: { parts: [{ text: "Professional headshot of a friendly business owner, middle-aged man, casual professional attire, blurred background of a Knoxville residential project, warm morning lighting." }] }
-          });
-          const part = response.candidates[0].content.parts.find(p => p.inlineData);
-          if (part?.inlineData) {
-            const data = `data:image/png;base64,${part.inlineData.data}`;
-            setOwnerImg(data);
-            ownerImageCache = data;
-          }
-        } catch (e) { console.error(e); }
-      }
-    };
-    fetchImg();
-  }, []);
 
   return (
     <div className="bg-brand-cream pt-24 min-h-screen">
@@ -41,11 +15,7 @@ const AboutPage: React.FC<{ onQuoteClick: () => void }> = ({ onQuoteClick }) => 
             <Reveal direction="left">
               <div className="relative">
                 <div className="w-full aspect-[4/5] bg-white rounded-xl overflow-hidden border border-brand-silver/20 shadow-2xl">
-                  {ownerImg ? (
-                    <img src={ownerImg} alt="LyonsMasonry Owner" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                  ) : (
-                    <div className="w-full h-full animate-pulse bg-brand-silver/20"></div>
-                  )}
+                  <img src={ownerImg} alt="LyonsMasonry Owner" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
                 </div>
                 <div className="absolute -bottom-6 -right-6 bg-brand-navy p-8 rounded-lg shadow-xl border-4 border-brand-cream">
                   <p className="text-4xl font-display font-bold text-white">25+</p>

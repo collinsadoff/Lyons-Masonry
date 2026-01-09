@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Icon } from '@iconify/react';
-import { GoogleGenAI } from "@google/genai";
 import Reveal from './Reveal';
 
 interface Review {
@@ -8,8 +7,7 @@ interface Review {
   date: string;
   rating: number;
   text: string;
-  prompt: string;
-  image?: string;
+  image: string;
 }
 
 const reviewsData: Review[] = [
@@ -18,93 +16,42 @@ const reviewsData: Review[] = [
     date: "1 month ago",
     rating: 5,
     text: "LyonsMasonry transformed our Bearden backyard with a stunning stone patio. The best masonry crew in Knoxville. They were punctual, polite, and true craftsmen. Highly recommend them!",
-    prompt: "Professional realistic headshot of a friendly 45-year-old man, slight smile, wearing a casual navy polo, blurred high-end backyard background, cinematic lighting, 8k resolution."
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
   },
   {
     name: "Sarah Jenkins",
     date: "2 months ago",
     rating: 5,
     text: "Matched the historic brick in Fourth & Gill perfectly for our chimney restoration. True artisans who understand Knoxville's heritage and historic requirements. Professional from start to finish.",
-    prompt: "Realistic professional portrait of a woman in her 30s, natural hair, wearing a beige blazer, soft natural lighting, elegant studio background, high detail skin texture."
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
   },
   {
     name: "Robert Chen",
     date: "3 weeks ago",
     rating: 5,
     text: "Excellent experience with our Farragut retaining wall project. The quote was transparent, and they finished ahead of schedule. Best local contractor I've worked with in East Tennessee.",
-    prompt: "Realistic portrait of a friendly man in his late 50s, salt and pepper hair, wearing a clean light-blue button-down shirt, outdoor garden background, sharp focus, professional photography."
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"
   },
   {
     name: "Amanda Wright",
     date: "2 weeks ago",
     rating: 5,
     text: "Used them for a custom outdoor fireplace and pizza oven. The attention to detail in the stonework is incredible. They really brought our vision to life. Worth every penny.",
-    prompt: "Professional headshot of a smiling woman in her 40s, business casual, garden background, high quality photography."
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
   },
   {
     name: "David Miller",
     date: "4 months ago",
     rating: 5,
     text: "Reliable, clean, and professional. They repaired our foundation walls and the work is rock solid. No more water issues. Great communication throughout the whole process.",
-    prompt: "Friendly looking man in his 40s, construction manager style, blurred construction site background, professional lighting."
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
   }
 ];
-
-const imageMemoryCache: Record<string, string> = {};
 
 const GoogleReviews: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
   const [isPaused, setIsPaused] = useState(false);
-  const [generatedImages, setGeneratedImages] = useState<Record<string, string>>({});
-  const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>({});
-
-  const generateReviewerImage = async (review: Review, retryCount = 0) => {
-    if (imageMemoryCache[review.name]) {
-      setGeneratedImages(prev => ({ ...prev, [review.name]: imageMemoryCache[review.name] }));
-      return;
-    }
-
-    setLoadingImages(prev => ({ ...prev, [review.name]: true }));
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
-        contents: { parts: [{ text: review.prompt }] },
-      });
-
-      let imageUrl = '';
-      if (response.candidates && response.candidates[0].content.parts) {
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-            break;
-          }
-        }
-      }
-
-      if (imageUrl) {
-        setGeneratedImages(prev => ({ ...prev, [review.name]: imageUrl }));
-        imageMemoryCache[review.name] = imageUrl;
-      }
-    } catch (error: any) {
-      if (retryCount < 3 && (error?.status === 'RESOURCE_EXHAUSTED' || error?.message?.includes('429'))) {
-        const delay = Math.pow(2, retryCount) * 2000 + Math.random() * 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-        return generateReviewerImage(review, retryCount + 1);
-      }
-    } finally {
-      setLoadingImages(prev => ({ ...prev, [review.name]: false }));
-    }
-  };
-
-  useEffect(() => {
-    reviewsData.forEach((review, index) => {
-      if (!generatedImages[review.name]) {
-        setTimeout(() => generateReviewerImage(review), index * 1000);
-      }
-    });
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -179,15 +126,7 @@ const GoogleReviews: React.FC = () => {
                 <div className="bg-white/5 p-8 rounded-xl border border-white/10 h-full flex flex-col hover:border-brand-silver/50 transition-colors group backdrop-blur-sm shadow-xl">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 rounded-full overflow-hidden bg-brand-navy border border-white/10 flex-shrink-0">
-                      {loadingImages[review.name] ? (
-                        <div className="w-full h-full animate-pulse bg-white/10" />
-                      ) : generatedImages[review.name] ? (
-                        <img src={generatedImages[review.name]} alt={review.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Icon icon="solar:user-linear" className="text-white/20" />
-                        </div>
-                      )}
+                      <img src={review.image} alt={review.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <h4 className="text-brand-cream font-bold text-sm uppercase tracking-wider">{review.name}</h4>

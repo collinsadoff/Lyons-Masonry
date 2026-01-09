@@ -98,8 +98,7 @@ You may be prompted to authenticate with GitHub. Follow the prompts to complete 
 1. Sign up at [vercel.com](https://vercel.com)
 2. Click "New Project"
 3. Import your GitHub repository
-4. Add environment variable: `GEMINI_API_KEY`
-5. Click "Deploy"
+4. Click "Deploy"
 
 ### Option 2: Netlify
 
@@ -108,8 +107,7 @@ You may be prompted to authenticate with GitHub. Follow the prompts to complete 
 3. Connect to GitHub and select your repository
 4. Build command: `npm run build`
 5. Publish directory: `dist`
-6. Add environment variable: `GEMINI_API_KEY`
-7. Click "Deploy site"
+6. Click "Deploy site"
 
 ### Option 3: GitHub Pages
 
@@ -121,12 +119,6 @@ You may be prompted to authenticate with GitHub. Follow the prompts to complete 
    ```
 4. Run: `npm run deploy`
 5. Enable GitHub Pages in repository settings
-
-## Environment Variables for Production
-
-Don't forget to set these environment variables in your deployment platform:
-
-- `GEMINI_API_KEY` - Your Google Gemini API key
 
 ## Troubleshooting
 

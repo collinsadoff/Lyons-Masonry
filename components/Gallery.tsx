@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Icon } from '@iconify/react';
-import { GoogleGenAI } from "@google/genai";
 import Reveal from './Reveal';
 
 interface ProjectStat {
@@ -14,7 +13,7 @@ interface Project {
   title: string;
   category: string;
   description: string;
-  prompt: string;
+  image: string;
   stats: ProjectStat[];
 }
 
@@ -24,7 +23,7 @@ const projects: Project[] = [
     title: "Sequoyah Hills Terrace",
     category: "Hardscapes",
     description: "Multi-level Tennessee fieldstone patio installation with integrated seating walls.",
-    prompt: "High-end luxury multi-level stone patio made of natural Tennessee fieldstone, built-in seating walls, lush Knoxville landscaping, golden hour lighting, professional architectural photography, 8k resolution.",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=1000&fit=crop",
     stats: [
       { label: "Material", value: "TN Fieldstone" },
       { label: "Location", value: "Knoxville", accent: true }
@@ -35,7 +34,7 @@ const projects: Project[] = [
     title: "Old North Knox Restoration",
     category: "Restoration",
     description: "Detailed tuckpointing and brick matching for a historic Victorian facade.",
-    prompt: "Macro photography of historic red brick restoration on a Victorian house in Knoxville, perfect mortar tuckpointing, heritage masonry craftsmanship, sharp focus on texture, historical accuracy.",
+    image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=1000&fit=crop",
     stats: [
       { label: "Match Accuracy", value: "100%" },
       { label: "Style", value: "Historic", accent: true }
@@ -46,7 +45,7 @@ const projects: Project[] = [
     title: "Farragut Estate Entry",
     category: "Hardscapes",
     description: "Grand brick entrance and driveway pavers for a luxury residence in Farragut.",
-    prompt: "A grand entrance of a luxury estate in Farragut Tennessee, featuring intricate custom brick patterns and high-quality driveway pavers, morning dew, professional real estate photography.",
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=1000&fit=crop",
     stats: [
       { label: "Material", value: "Custom Brick" },
       { label: "Status", value: "Completed", accent: true }
@@ -57,7 +56,7 @@ const projects: Project[] = [
     title: "Maryville Outdoor Living",
     category: "Outdoor Living",
     description: "Stone veneer outdoor kitchen with wood-fired oven and integrated bar.",
-    prompt: "Luxury outdoor kitchen with a stone veneer finish, featuring a wood-fired pizza oven and an integrated granite bar, backyard party atmosphere, warm string lights, Maryville Tennessee.",
+    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=1000&fit=crop",
     stats: [
       { label: "Features", value: "Built-in Grill" },
       { label: "Value Add", value: "Premium", accent: true }
@@ -65,59 +64,9 @@ const projects: Project[] = [
   }
 ];
 
-// Memory-based cache to avoid Storage Quota errors
-const projectImageCache: Record<number, string> = {};
-
 const Gallery: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
-  const [generatedImages, setGeneratedImages] = useState<Record<number, string>>({});
-  const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
-
-  const generateProjectImage = async (project: Project) => {
-    if (projectImageCache[project.id]) {
-      setGeneratedImages(prev => ({ ...prev, [project.id]: projectImageCache[project.id] }));
-      return;
-    }
-
-    setLoadingImages(prev => ({ ...prev, [project.id]: true }));
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
-        contents: {
-          parts: [{ text: project.prompt }],
-        },
-      });
-
-      let imageUrl = '';
-      if (response.candidates && response.candidates[0].content.parts) {
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-            break;
-          }
-        }
-      }
-
-      if (imageUrl) {
-        setGeneratedImages(prev => ({ ...prev, [project.id]: imageUrl }));
-        projectImageCache[project.id] = imageUrl;
-      }
-    } catch (error) {
-      console.error("Failed to generate AI project image for:", project.title, error);
-    } finally {
-      setLoadingImages(prev => ({ ...prev, [project.id]: false }));
-    }
-  };
-
-  useEffect(() => {
-    projects.forEach(project => {
-      if (!generatedImages[project.id]) {
-        generateProjectImage(project);
-      }
-    });
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -201,19 +150,11 @@ const Gallery: React.FC = () => {
                         >
                             <div className="group relative w-full aspect-[4/5] md:aspect-[3/4] rounded-xl overflow-hidden bg-brand-cream border border-white/10 shadow-2xl">
                                 <div className="absolute inset-0">
-                                    {loadingImages[project.id] ? (
-                                      <div className="w-full h-full bg-brand-silver/20 animate-pulse flex items-center justify-center">
-                                         <Icon icon="solar:gallery-minimalistic-linear" width="48" className="text-brand-silver/50" />
-                                      </div>
-                                    ) : generatedImages[project.id] ? (
-                                      <img 
-                                          src={generatedImages[project.id]} 
-                                          alt={project.title} 
-                                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full bg-brand-silver/20"></div>
-                                    )}
+                                    <img 
+                                        src={project.image} 
+                                        alt={project.title} 
+                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
+                                    />
                                     <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
                                 </div>
 

@@ -8,8 +8,8 @@ A modern, responsive website for Lyons Masonry & Hardscapes - professional mason
 
 - **Modern Single Page Application** - Fast, responsive React-based interface
 - **Multi-Page Navigation** - Home, Services, About, Service Area, Contact, and Quote pages
-- **Interactive Quote Form** - AI-powered quote generation using Google Gemini
-- **Google Reviews Integration** - Display real customer testimonials
+- **Interactive Quote Form** - Professional estimate request system
+- **Customer Reviews** - Display real customer testimonials
 - **Image Gallery** - Showcase masonry and hardscape projects
 - **Mobile-First Design** - Fully responsive with sticky mobile CTA
 - **Smooth Animations** - Reveal animations and transitions for enhanced UX
@@ -22,14 +22,12 @@ A modern, responsive website for Lyons Masonry & Hardscapes - professional mason
 - **Build Tool:** Vite 6.2
 - **Styling:** Tailwind CSS (via CDN)
 - **Icons:** Iconify React
-- **AI Integration:** Google Gemini API
 - **Fonts:** Inter (sans-serif), Oswald (display)
 
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher recommended)
 - npm or yarn package manager
-- Google Gemini API key (for quote form functionality)
 
 ## 🚀 Getting Started
 
@@ -45,17 +43,6 @@ cd Lyons-Masonry
 ```bash
 npm install
 ```
-
-3. Create environment file:
-```bash
-# Create .env.local file in the root directory
-echo "GEMINI_API_KEY=your_gemini_api_key_here" > .env.local
-```
-
-4. Get your Gemini API key:
-   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Generate a new API key
-   - Add it to your `.env.local` file
 
 ### Development
 
@@ -149,14 +136,6 @@ netlify deploy
 npm run build
 # Deploy the dist/ folder to GitHub Pages
 ```
-
-Remember to set the `GEMINI_API_KEY` environment variable in your deployment platform's settings.
-
-## 🔒 Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GEMINI_API_KEY` | Google Gemini API key for AI quote generation | Yes |
 
 ## 📝 License
 
