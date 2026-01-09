@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ onQuoteClick, onNavLinkClick }) => {
              <div className="flex items-center mb-8">
                 <button onClick={() => onNavLinkClick('home')} className="flex items-center transition-transform hover:scale-105">
                   <img 
-                    src="logo.png" 
+                    src="Media/logo.png" 
                     alt="Lyons Masonry" 
                     className="h-20 w-auto object-contain" 
                     onError={(e) => {

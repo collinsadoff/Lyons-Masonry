@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavLinkClick, activeView }) => {
               className="flex items-center h-full group"
             >
               <img 
-                src="logo.png" 
+                src="Media/logo.png" 
                 alt="Lyons Masonry" 
                 className="h-14 md:h-18 w-auto object-contain transition-transform group-hover:scale-105 block"
                 onError={(e) => {
