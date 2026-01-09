@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LyonsMasonry | Expert Brick & Stone Craftsmanship</title>
+    <meta name="description" content="Professional masonry services: brick, stone, block, and hardscapes. Built to last." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                navy: '#052b4f',   // Primary Text / Dark elements
+                silver: '#ababa9', // Special Pop / Accents
+                cream: '#e3dad1',  // Background
+                // Alias for components
+                blue: '#052b4f',
+                500: '#052b4f',
+                600: '#041d36',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              display: ['Oswald', 'Impact', 'sans-serif'],
+            },
+            animation: {
+              'sonar': 'sonar 2s infinite',
+              'sonar-white': 'sonar-white 2s infinite',
+            },
+            keyframes: {
+              sonar: {
+                '0%': { boxShadow: '0 0 0 0px rgba(5, 43, 79, 0.6)' },
+                '100%': { boxShadow: '0 0 0 24px rgba(5, 43, 79, 0)' },
+              },
+              'sonar-white': {
+                '0%': { boxShadow: '0 0 0 0px rgba(227, 218, 209, 0.4)' },
+                '100%': { boxShadow: '0 0 0 24px rgba(227, 218, 209, 0)' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Oswald', sans-serif;
+        letter-spacing: 0.025em;
+      }
+      .masonry-grid {
+        column-count: 1;
+        column-gap: 1.5rem;
+      }
+      @media (min-width: 640px) {
+        .masonry-grid {
+          column-count: 2;
+        }
+      }
+      @media (min-width: 1024px) {
+        .masonry-grid {
+          column-count: 3;
+        }
+      }
+      .break-inside-avoid {
+        break-inside: avoid;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@iconify/react": "https://esm.sh/@iconify/react@^5.0.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-brand-cream text-brand-navy antialiased selection:bg-brand-navy selection:text-brand-cream">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
